@@ -2,8 +2,8 @@ console.log('***** Music Collection *****')
 
 let collection = [];
 
-function addToCollection(albumTitle, artist, yearPublished) {
-    let album = {albumTitle, artist, yearPublished};
+function addToCollection(albumTitle, artist, yearPublished, arrayOfTracks) {
+    let album = {albumTitle, artist, yearPublished, arrayOfTracks};
     collection.push(album);
     return album;
 }
@@ -19,13 +19,29 @@ console.log(addToCollection('For Emma, Forever Ago', 'Bon Iver', 2007));
 console.log(collection);
 
 
+/*
+Update the showCollection function to display the list of tracks for each album with its name and duration.
+    TITLE by ARTIST, published in YEAR:
+    1. NAME: DURATION
+    2. NAME: DURATION
+    3. NAME: DURATION
+    TITLE by ARTIST, published in YEAR:
+    1. NAME: DURATION
+    2. NAME: DURATION
+*/
+
 
 function showCollection(ary) {
     let length = ary.length;
     let singular = length === 1;
     console.log(`There ${singular ? 'is' : 'are'} ${length} item${singular ? '' : 's'} in this collection.`);
     for (let item of ary) {
-        console.log(`${item.albumTitle} by ${item.artist} published in ${item.yearPublished}`)
+        console.log(`${item.albumTitle} by ${item.artist} published in ${item.yearPublished}:`)
+        if (item.arrayOfTracks !== undefined) {
+            for (entry of item.arrayOfTracks.length) {
+
+            }
+        }
     }
 };
 // Testing:
@@ -53,30 +69,55 @@ console.log(findByArtist('Odesza'));
 console.log(findByArtist('Tiesto'));
 
 
-function search(criterion) {
 
+/* example search object: { artist: 'Ray Charles', year: 1957 } */
+function search(criteria) {
+    // filter blank search criteria - return all albums, but a in new array
+    if (Object.keys(criteria).length === 0) {return collection.slice()};
+    let results = [];
+    for (item of collection) {
+        let flag = true;
+        for (key of Object.keys(criteria)) {
+            // I feel like this logic is sort of clunky. It also doesn't check against trackName. arrayOfTracks is an array of objects: {trackName: 'stringValued', duration: number_valued}
+            if (key === 'trackName') {
+                let trackFlag = false;
+                for (track of item['arrayOfTracks']) {
+                    if (track.trackName === criteria[key]) {
+                        trackFlag = true;
+                    }
+                if (trackFlag === false) {
+                    flag = false;
+                    break;
+                };
+            }
+            if (criteria[key] !== item[key]) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {results.push(item)};
+    }
+    return results;
 };
+// Tests:
+console.log('\n TESTING SEARCH FUNCTION \n')
+// Case 0: empty criterion
+console.log(search({}));
+// Case 1: no results
+console.log(search({artist: 'Velvet Underground'}))
+console.log(search({yearPublished: 1800}));
+// Case 2: some results
+console.log(search({albumTitle: 'Sale el Sol'})); // one result
+console.log(search({yearPublished: 2007})); // two results
+console.log(search({artist: 'Mazzy Star'})); // one result
+// Case 3:
+console.log(search({albumTitle: 'Dummy', yearPublished: 1994})); // one result
 
-/*
-Stretch goals
-Take an input parameter for a search criteria object. Create your solution based on a search object that has these properties:
-{ artist: 'Ray Charles', year: 1957 }
-The returned output from search should meet these requirements:
-Return a new array of all items in the collection matching all of the search criteria.
-If no results are found, return an empty array.
-If there is no search object or an empty search object provided as input, then return all albums in the collection.
-Add an array of tracks to your album objects. Each track should have a name and duration. You will need to update the functions to support this new property:
 
-Update the addToCollection function to also take an input parameter for the array of tracks.
-Update search to allow a trackName search criteria.
-Update the showCollection function to display the list of tracks for each album with its name and duration.
-    TITLE by ARTIST, published in YEAR:
-    1. NAME: DURATION
-    2. NAME: DURATION
-    3. NAME: DURATION
-    TITLE by ARTIST, published in YEAR:
-    1. NAME: DURATION
-    2. NAME: DURATION
-Make sure to test all your code!
 
-*/
+// testing updates to functions:
+// search finds album tracks?
+    // add tracks to an album within collections (test through function)
+    // test that it works properly from a search perspective
+
+// test showCollection function
