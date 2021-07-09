@@ -71,59 +71,63 @@ console.log(findByArtist('Odesza'));
 console.log(findByArtist('Tiesto'));
 
 
-// good on curly braces thru here
-
 /* example search object: { artist: 'Ray Charles', year: 1957 } */
 function search(criteria) {
     // filter blank search criteria - return all albums, but a in new array
     if (Object.keys(criteria).length === 0) {return collection.slice()};
     let results = [];
     for (let item of collection) {
-        let flag = true;
-        for (let key of Object.keys(criteria)) {
-            // I feel like this logic is sort of clunky. It also doesn't check against trackName. arrayOfTracks is an array of objects: {trackName: 'stringValued', duration: number_valued}
-            if (key === 'trackName' || key === 'duration') {
-                let trackFlag = false;
-                for (let track of item['arrayOfTracks']) {
-                    if (track.trackName === criteria[key]) {
-                        trackFlag = true;
+        let match = true;
+        innerloop:
+        for (let criterion of Object.keys(criteria)) {
+            // I feel like this logic is sort of clunky. 
+            // if the criteria is trackName or duration, we need to check if any song is a match
+            // if all songs are not matches, then the current object failed to meet the criteria and we move on
+            if (criterion === 'trackName' || criterion === 'duration') { 
+                let trackMatch = false;
+                if (item.arrayOfTracks !== undefined) {
+                    for (let track of item.arrayOfTracks) {
+                        if (track[criterion] === criteria[criterion]) {
+                            trackMatch = true;
+                            break;
+                        }
                     }
-                if (trackFlag === false) {
-                    flag = false;
-                    break;
                 };
-            }
-            if (criteria[key] !== item[key]) {
-                flag = false;
+                if (!trackMatch) {
+                    match = false;
+                    break innerloop;
+                };
+            } else if (criteria[criterion] !== item[criterion]) {
+                match = false;
                 break;
-            }
-        }
-        if (flag) {results.push(item)};
-        }
-    }
+            };
+        };
+        if (match) {results.push(item)};
+    };
     return results;
 };
 
 // Tests:
 console.log('\n TESTING SEARCH FUNCTION \n')
+console.log('\n Case 0');
 // Case 0: empty criterion
 console.log(search({}));
 // Case 1: no results
+console.log('\n Case 1');
 console.log(search({artist: 'Velvet Underground'}))
 console.log(search({yearPublished: 1800}));
 // Case 2: some results
+console.log('\n Case 2');
 console.log(search({albumTitle: 'Sale el Sol'})); // one result
 console.log(search({yearPublished: 2007})); // two results
 console.log(search({artist: 'Mazzy Star'})); // one result
 // Case 3:
+console.log('\n Case 3');
 console.log(search({albumTitle: 'Dummy', yearPublished: 1994})); // one result
 console.log(search({albumTitle: 'Dummy', yearPublished: 1994, artist: 'Tiesto'})); // zero results
+// Case 4:
+console.log('\n Case 4');
+console.log(search({trackName: 'song1'})) // one result
+console.log(search({artist: 'Bon Iver', trackName: 'songA'}))
 
-
-
-// testing updates to functions:
-// search finds album tracks?
-    // add tracks to an album within collections (test through function)
-    // test that it works properly from a search perspective
-
-// test showCollection function
+// I'm going to need eye surgery after looking for that mismatched curly brace.
