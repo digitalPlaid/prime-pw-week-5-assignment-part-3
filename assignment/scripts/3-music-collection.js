@@ -15,7 +15,6 @@ console.log(addToCollection('In Search of Sunrise 6: Ibiza', 'Tiesto', 2007));
 console.log(addToCollection('In Search of Sunrise 7: Asia', 'Tiesto', 2008));
 console.log(addToCollection('Sale el Sol', 'Shakira',2010));
 console.log(addToCollection('For Emma, Forever Ago', 'Bon Iver', 2007));
-console.log(addToCollection('GenerationWhy', 'Zhu', 2016));
 
 console.log(collection);
 
@@ -25,7 +24,7 @@ function showCollection(ary) {
     let length = ary.length;
     let singular = length === 1;
     console.log(`There ${singular ? 'is' : 'are'} ${length} item${singular ? '' : 's'} in this collection.`);
-    for (item of ary) {
+    for (let item of ary) {
         console.log(`${item.albumTitle} by ${item.artist} published in ${item.yearPublished}`)
     }
 };
@@ -37,21 +36,29 @@ showCollection([collection[0]]);
 // Case 3: multiple entry array
 showCollection(collection);
 
+
+function findByArtist(artistName) {
+    let results  = [];
+    for (let entry of collection) {
+        if (artistName === entry.artist) {
+            results.push(entry);
+        }
+    }
+    return results;
+}
+// Tests:
+// Case 1: not in collection
+console.log(findByArtist('Odesza'));
+// Case 2: in collection
+console.log(findByArtist('Tiesto'));
+
+
+function search(criterion) {
+
+};
+
 /*
-
-Add a function named findByArtist. This function should:
-
-Take in artist (a string) parameter
-Create an array to hold any results, empty to start
-Loop through the collection and add any objects with a matching artist to the array.
-Return the array with the matching results. If no results are found, return an empty array.
-Test the findByArtist function. Make sure to test with an artist you know is in the collection, as well as an artist you know is not in your collection. Check that for artists with multiple matches, all are found.
-
-When testing your functions, write all tests in the JavaScript file!
-
 Stretch goals
-Create a function called search. This function should:
-
 Take an input parameter for a search criteria object. Create your solution based on a search object that has these properties:
 { artist: 'Ray Charles', year: 1957 }
 The returned output from search should meet these requirements:
