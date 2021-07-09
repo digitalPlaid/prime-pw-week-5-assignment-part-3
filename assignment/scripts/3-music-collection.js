@@ -38,8 +38,8 @@ function showCollection(ary) {
     for (let item of ary) {
         console.log(`${item.albumTitle} by ${item.artist} published in ${item.yearPublished}:`)
         if (item.arrayOfTracks !== undefined) {
-            for (entry of item.arrayOfTracks.length) {
-
+            for (let entry in item.arrayOfTracks) {
+                console.log(`${entry+1}. ${item.arrayOfTracks[entry].trackName}: ${item.arrayOfTracks[entry].duration}`);
             }
         }
     }
@@ -75,13 +75,13 @@ function search(criteria) {
     // filter blank search criteria - return all albums, but a in new array
     if (Object.keys(criteria).length === 0) {return collection.slice()};
     let results = [];
-    for (item of collection) {
+    for (let item of collection) {
         let flag = true;
-        for (key of Object.keys(criteria)) {
+        for (let key of Object.keys(criteria)) {
             // I feel like this logic is sort of clunky. It also doesn't check against trackName. arrayOfTracks is an array of objects: {trackName: 'stringValued', duration: number_valued}
             if (key === 'trackName') {
                 let trackFlag = false;
-                for (track of item['arrayOfTracks']) {
+                for (let track of item['arrayOfTracks']) {
                     if (track.trackName === criteria[key]) {
                         trackFlag = true;
                     }
@@ -99,6 +99,7 @@ function search(criteria) {
     }
     return results;
 };
+
 // Tests:
 console.log('\n TESTING SEARCH FUNCTION \n')
 // Case 0: empty criterion
