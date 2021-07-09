@@ -11,10 +11,10 @@ function addToCollection(albumTitle, artist, yearPublished, arrayOfTracks) {
 // Tests for addToCollection:
 console.log(addToCollection('Dummy','Portishead', 1994));
 console.log(addToCollection('So Tonight That I Might See', 'Mazzy Star', 1993));
-console.log(addToCollection('In Search of Sunrise 6: Ibiza', 'Tiesto', 2007));
-console.log(addToCollection('In Search of Sunrise 7: Asia', 'Tiesto', 2008));
+console.log(addToCollection('In Search of Sunrise 6: Ibiza', 'Tiesto', 2007, [{trackName: 'song1', duration: 1}, {trackName: 'song2', duration: 2}, {trackName: 'song3', duration: 3}]));
+console.log(addToCollection('In Search of Sunrise 7: Asia', 'Tiesto', 2008, [{trackName: 'song4', duration: 4}, {trackName: 'song5', duration: 5}, {trackName: 'song6', duration: 6}]));
 console.log(addToCollection('Sale el Sol', 'Shakira',2010));
-console.log(addToCollection('For Emma, Forever Ago', 'Bon Iver', 2007));
+console.log(addToCollection('For Emma, Forever Ago', 'Bon Iver', 2007, [{trackName: 'songA', duration: 1}, {trackName: 'songB', duration: 2}, {trackName: 'songC', duration: 3}]));
 
 console.log(collection);
 
@@ -39,11 +39,13 @@ function showCollection(ary) {
         console.log(`${item.albumTitle} by ${item.artist} published in ${item.yearPublished}:`)
         if (item.arrayOfTracks !== undefined) {
             for (let entry in item.arrayOfTracks) {
+                entry = parseInt(entry);
                 console.log(`${entry+1}. ${item.arrayOfTracks[entry].trackName}: ${item.arrayOfTracks[entry].duration}`);
             }
         }
     }
 };
+
 // Testing:
 // Case 1: empty array
 showCollection([]);
@@ -69,6 +71,7 @@ console.log(findByArtist('Odesza'));
 console.log(findByArtist('Tiesto'));
 
 
+// good on curly braces thru here
 
 /* example search object: { artist: 'Ray Charles', year: 1957 } */
 function search(criteria) {
@@ -79,7 +82,7 @@ function search(criteria) {
         let flag = true;
         for (let key of Object.keys(criteria)) {
             // I feel like this logic is sort of clunky. It also doesn't check against trackName. arrayOfTracks is an array of objects: {trackName: 'stringValued', duration: number_valued}
-            if (key === 'trackName') {
+            if (key === 'trackName' || key === 'duration') {
                 let trackFlag = false;
                 for (let track of item['arrayOfTracks']) {
                     if (track.trackName === criteria[key]) {
@@ -96,6 +99,7 @@ function search(criteria) {
             }
         }
         if (flag) {results.push(item)};
+        }
     }
     return results;
 };
@@ -113,6 +117,7 @@ console.log(search({yearPublished: 2007})); // two results
 console.log(search({artist: 'Mazzy Star'})); // one result
 // Case 3:
 console.log(search({albumTitle: 'Dummy', yearPublished: 1994})); // one result
+console.log(search({albumTitle: 'Dummy', yearPublished: 1994, artist: 'Tiesto'})); // zero results
 
 
 
